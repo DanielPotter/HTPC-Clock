@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace HTPC_Clock
 {
@@ -23,6 +24,14 @@ namespace HTPC_Clock
         public MainWindow()
         {
             InitializeComponent();
+
+            fetchTimeClock.Interval = TimeSpan.FromMilliseconds(1000);
+            fetchTimeClock.Tick += fetchTimeClock_Tick;
+        }
+
+        private void fetchTimeClock_Tick(object sender, EventArgs e)
+        {
+            SetClock(DateTime.Now);
         }
 
         private double initialWindowWidth;
@@ -32,7 +41,10 @@ namespace HTPC_Clock
             this.textGrid.RenderTransform = new ScaleTransform();
             this.initialWindowWidth = this.ActualWidth;
             this.WindowState = System.Windows.WindowState.Maximized;
+            fetchTimeClock.Start();
         }
+
+        DispatcherTimer fetchTimeClock = new DispatcherTimer();
 
         private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -46,6 +58,16 @@ namespace HTPC_Clock
         private void clockLabel_Loaded(object sender, RoutedEventArgs e)
         {
             //this.initialFontSize = this.clockLabel.FontSize;
+        }
+
+        private void SetClock(DateTime timeToDisplay)
+        {
+            timeMajorLabel.Content = timeToDisplay.TimeOfDay.Hours.ToString() + ":" + timeToDisplay.TimeOfDay.Minutes.ToString();
+            string ampm = "pm";
+            if (timeToDisplay.TimeOfDay.TotalHours - 12 < 0)
+                ampm = "am";
+            timeMinorLabel.Content = ":" + timeToDisplay.TimeOfDay.Seconds.ToString("00") + " " + ampm;
+            dateLabel.Content = timeToDisplay.ToLongDateString();
         }
     }
 }
