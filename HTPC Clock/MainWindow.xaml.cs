@@ -62,12 +62,30 @@ namespace HTPC_Clock
 
         private void SetClock(DateTime timeToDisplay)
         {
-            timeMajorLabel.Content = timeToDisplay.TimeOfDay.Hours.ToString() + ":" + timeToDisplay.TimeOfDay.Minutes.ToString();
+            int hour = timeToDisplay.TimeOfDay.Hours;
+            if (hour > 12)
+                hour -= 12;
             string ampm = "pm";
             if (timeToDisplay.TimeOfDay.TotalHours - 12 < 0)
                 ampm = "am";
+            timeMajorLabel.Content = hour.ToString() + ":" + timeToDisplay.TimeOfDay.Minutes.ToString("00");
             timeMinorLabel.Content = ":" + timeToDisplay.TimeOfDay.Seconds.ToString("00") + " " + ampm;
-            dateLabel.Content = timeToDisplay.ToLongDateString();
+            dateLabel.Content = timeToDisplay.DayOfWeek.ToString() + ", " + timeToDisplay.ToString("m");
+            switch (timeToDisplay.Day.ToString().Last())
+            {
+                case '1':
+                    dateLabel.Content += "st";
+                    break;
+                case '2':
+                    dateLabel.Content += "nd";
+                    break;
+                case '3':
+                    dateLabel.Content += "rd";
+                    break;
+                default:
+                    dateLabel.Content += "th";
+                    break;
+            }
         }
     }
 }
