@@ -27,6 +27,7 @@ namespace HTPC_Clock
 
             fetchTimeClock.Interval = TimeSpan.FromMilliseconds(1000);
             fetchTimeClock.Tick += fetchTimeClock_Tick;
+            fetchTimeClock.Start();
         }
 
         private void fetchTimeClock_Tick(object sender, EventArgs e)
@@ -41,7 +42,6 @@ namespace HTPC_Clock
             this.textGrid.RenderTransform = new ScaleTransform();
             this.initialWindowWidth = this.ActualWidth;
             this.WindowState = System.Windows.WindowState.Maximized;
-            fetchTimeClock.Start();
         }
 
         DispatcherTimer fetchTimeClock = new DispatcherTimer();
