@@ -28,37 +28,20 @@ namespace HTPC_Clock
             fetchTimeClock.Interval = TimeSpan.FromMilliseconds(1000);
             fetchTimeClock.Tick += fetchTimeClock_Tick;
             fetchTimeClock.Start();
+            SetClock(DateTime.Now);
         }
 
         private void fetchTimeClock_Tick(object sender, EventArgs e)
         {
             SetClock(DateTime.Now);
         }
-
-        private double initialWindowWidth;
-        private double initialScale = 1;
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.textGrid.RenderTransform = new ScaleTransform();
-            this.initialWindowWidth = this.ActualWidth;
             this.WindowState = System.Windows.WindowState.Maximized;
         }
 
         DispatcherTimer fetchTimeClock = new DispatcherTimer();
-
-        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (e.PreviousSize.Width != 0)
-            {
-                double newScale = e.NewSize.Width * this.initialScale / this.initialWindowWidth;
-                textGrid.RenderTransform = new ScaleTransform(newScale, newScale);
-            }
-        }
-
-        private void clockLabel_Loaded(object sender, RoutedEventArgs e)
-        {
-            //this.initialFontSize = this.clockLabel.FontSize;
-        }
 
         private void SetClock(DateTime timeToDisplay)
         {
