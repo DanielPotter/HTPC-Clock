@@ -34,11 +34,12 @@ namespace HTPC_Clock
         private void fetchTimeClock_Tick(object sender, EventArgs e)
         {
             SetClock(DateTime.Now);
+            SetScreen();
         }
         
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.WindowState = System.Windows.WindowState.Maximized;
+            SetScreen(true);
         }
 
         DispatcherTimer fetchTimeClock = new DispatcherTimer();
@@ -68,6 +69,24 @@ namespace HTPC_Clock
                 default:
                     dateLabel.Content += "th";
                     break;
+            }
+        }
+
+        private void SetScreen(bool forceSet = false)
+        {
+            var displayScreen = ScreenHandler.GetSecondaryScreen();
+            if (displayScreen != null)
+            {
+                var currentScreen = ScreenHandler.GetCurrentScreen(this);
+                if (displayScreen.DeviceName != currentScreen.DeviceName || forceSet)
+                {
+                    this.WindowState = WindowState.Normal;
+                    this.Left = displayScreen.WorkingArea.Left;
+                    this.Top = displayScreen.WorkingArea.Top;
+                    this.Width = displayScreen.WorkingArea.Width;
+                    this.Height = displayScreen.WorkingArea.Height;
+                    this.WindowState = WindowState.Maximized;
+                }
             }
         }
     }
